@@ -1,0 +1,3 @@
+[submodule "hnpy"]
+	path = hnpy
+	url = https://github.com/mattrberry/hnpy.git
