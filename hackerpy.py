@@ -11,6 +11,13 @@ class HackerPy(object):
         self.stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
+
+        curses.start_color()
+        colors = [curses.COLOR_RED, curses.COLOR_GREEN, curses.COLOR_YELLOW,
+                  curses.COLOR_BLUE, curses.COLOR_MAGENTA, curses.COLOR_CYAN]
+        for num, color in enumerate(colors):
+            curses.init_pair(num + 1, color, curses.COLOR_BLACK)
+
         self.stdscr.keypad(True)
         self.height, self.width = self.stdscr.getmaxyx()
 
@@ -66,12 +73,37 @@ class HackerPy(object):
     def screen_posts(self):
         self.stdscr.clear()
         for count, item in enumerate(self.loaded_posts):
-            if len(item.title) > self.width:
-                title = item.title[:self.width - 3] + "..."
+            if len(item.title) > self.width - 4:
+                title = item.title[:self.width - 3 - 4] + "..."
             else:
                 title = item.title
-            self.stdscr.addstr(count * 2, 0, title)
-            self.stdscr.addstr(count * 2 + 1, 2, item.infoString(), curses.A_DIM)
+            info = item.infoString()
+
+            self.stdscr.addstr(count * 2,
+                               0,
+                               str(self.ppp * self.page + count + 1) + ".",
+                               curses.color_pair(5))
+            self.stdscr.addstr(count * 2,
+                               4,
+                               title)
+
+            self.stdscr.addstr(count * 2 + 1,
+                               6,
+                               " ".join(info.split()[:2]),
+                               curses.color_pair(2))
+            self.stdscr.addstr(count * 2 + 1,
+                               6 + len(" ".join(info.split()[:2])) + 1,
+                               " ".join(info.split()[2:4]),
+                               curses.color_pair(6))
+            self.stdscr.addstr(count * 2 + 1,
+                               6 + len(" ".join(info.split()[:4])) + 1,
+                               " ".join(info.split()[4:7]),
+                               curses.color_pair(3))
+            self.stdscr.addstr(count * 2 + 1,
+                               6 + len(" ".join(info.split()[:7])) + 1,
+                               " ".join(info.split()[7:]),
+                               curses.color_pair(2))
+
 
         self.stdscr.refresh()
 
