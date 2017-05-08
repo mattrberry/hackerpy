@@ -19,9 +19,6 @@ class HackerPy(object):
             curses.init_pair(num + 1, color, curses.COLOR_BLACK)
 
         self.stdscr.keypad(True)
-        self.height, self.width = self.stdscr.getmaxyx()
-
-        self.ppp = int(self.height / 2)
 
         self.screen_start()
 
@@ -77,7 +74,10 @@ class HackerPy(object):
                 title = item.title[:self.width - 3 - 4] + "..."
             else:
                 title = item.title
-            info = item.infoString()
+            score = str(item.score) + " points"
+            by = " by " + item.by
+            age = " " + item.ageString() + " ago"
+            comments = " | " + str(item.descendants) + " comments"
 
             self.stdscr.addstr(count * 2,
                                0,
@@ -89,25 +89,27 @@ class HackerPy(object):
 
             self.stdscr.addstr(count * 2 + 1,
                                6,
-                               " ".join(info.split()[:2]),
+                               score,
                                curses.color_pair(2))
             self.stdscr.addstr(count * 2 + 1,
-                               6 + len(" ".join(info.split()[:2])) + 1,
-                               " ".join(info.split()[2:4]),
+                               6 + len(score),
+                               by,
                                curses.color_pair(6))
             self.stdscr.addstr(count * 2 + 1,
-                               6 + len(" ".join(info.split()[:4])) + 1,
-                               " ".join(info.split()[4:7]),
+                               6 + len(score) + len(by),
+                               age,
                                curses.color_pair(3))
             self.stdscr.addstr(count * 2 + 1,
-                               6 + len(" ".join(info.split()[:7])) + 1,
-                               " ".join(info.split()[7:]),
+                               6 + len(score) + len(by) + len(age),
+                               comments,
                                curses.color_pair(2))
-
 
         self.stdscr.refresh()
 
     def hnpy_get_render(self, hnpy_getter):
+        self.height, self.width = self.stdscr.getmaxyx()
+        self.ppp = int(self.height / 2)
+
         self.screen_loading()
         self.item_ids = hnpy_getter()
         self.page = 0
